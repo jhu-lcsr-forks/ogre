@@ -51,6 +51,9 @@ namespace Ogre {
     {
         mTimer = Root::getSingleton().getTimer();
         resetStatistics();
+#ifdef OGRE_STEREO_ENABLE
+        mStereoEnabled = false;
+#endif
     }
 
     RenderTarget::~RenderTarget()

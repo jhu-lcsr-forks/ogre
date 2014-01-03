@@ -54,6 +54,9 @@ namespace Ogre {
 		// immediately test WGL_ARB_pixel_format and FSAA support
 		// so we can set configuration options appropriately
 		initialiseWGL();
+#ifdef OGRE_STEREO_ENABLE
+        mStereoMode = SMT_NONE;
+#endif
     } 
 
 	template<class C> void remove_duplicates(C& c)
@@ -84,6 +87,9 @@ namespace Ogre {
 		ConfigOption optRTTMode;
 		ConfigOption optSRGB;
 		ConfigOption optEnableFixedPipeline;
+#ifdef OGRE_STEREO_ENABLE
+        ConfigOption optStereoMode;
+#endif
 
 		// FS setting possibilities
 		optFullScreen.name = "Full Screen";
@@ -91,6 +97,14 @@ namespace Ogre {
 		optFullScreen.possibleValues.push_back("No");
 		optFullScreen.currentValue = "Yes";
 		optFullScreen.immutable = false;
+
+#ifdef OGRE_STEREO_ENABLE
+        optStereoMode.name = "Stereo Mode";
+        optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_NONE));
+        optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_FRAME_SEQUENTIAL));
+        optStereoMode.currentValue = optStereoMode.possibleValues[0];
+        optStereoMode.immutable = false;
+#endif
 
 		// Video mode possibilities
 		DEVMODE DevMode;
@@ -177,6 +191,9 @@ namespace Ogre {
 		mOptions[optRTTMode.name] = optRTTMode;
 		mOptions[optSRGB.name] = optSRGB;
 		mOptions[optEnableFixedPipeline.name] = optEnableFixedPipeline;
+#ifdef OGRE_STEREO_ENABLE
+        mOptions[optStereoMode.name] = optStereoMode;
+#endif
 
 		refreshConfig();
 	}
@@ -328,6 +345,14 @@ namespace Ogre {
 			bool hwGamma = (opt->second.currentValue == "Yes");
 			winOptions["gamma"] = StringConverter::toString(hwGamma);
 
+#ifdef OGRE_STEREO_ENABLE
+            opt = mOptions.find("Stereo Mode");
+            if (opt == mOptions.end())
+                OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find stereo enabled options!", "Win32GLSupport::createWindow");
+            winOptions["stereoMode"] = opt->second.currentValue;
+            mStereoMode = StringConverter::parseStereoMode(opt->second.currentValue);
+#endif
+      
             return renderSystem->_createRenderWindow(windowTitle, w, h, fullscreen, &winOptions);
         }
         else
@@ -622,6 +647,10 @@ namespace Ogre {
 		pfd.cAlphaBits = (colourDepth > 16)? 8 : 0;
 		pfd.cDepthBits = 24;
 		pfd.cStencilBits = 8;
+#ifdef OGRE_STEREO_ENABLE
+        if (SMT_FRAME_SEQUENTIAL == mStereoMode)
+            pfd.dwFlags |= PFD_STEREO;
+#endif
 
 		int format = 0;
 
@@ -648,6 +677,11 @@ namespace Ogre {
 			attribList.push_back(WGL_DEPTH_BITS_ARB); attribList.push_back(24);
 			attribList.push_back(WGL_STENCIL_BITS_ARB); attribList.push_back(8);
 			attribList.push_back(WGL_SAMPLES_ARB); attribList.push_back(multisample);
+#ifdef OGRE_STEREO_ENABLE
+            if (SMT_FRAME_SEQUENTIAL == mStereoMode)
+                attribList.push_back(WGL_STEREO_ARB); attribList.push_back(GL_TRUE);
+#endif
+
 			if (useHwGamma && mHasHardwareGamma)
 			{
 				attribList.push_back(WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT); attribList.push_back(GL_TRUE);

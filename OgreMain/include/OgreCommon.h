@@ -298,6 +298,25 @@ namespace Ogre {
         FBT_STENCIL = 0x4
     };
 
+#ifdef OGRE_STEREO_ENABLE
+    /** Defines the colour buffer types. */
+    enum ColourBufferType
+    {
+        CBT_BACK = 0x0,
+        CBT_BACK_LEFT,
+        CBT_BACK_RIGHT
+    };
+#endif
+
+#ifdef OGRE_STEREO_ENABLE
+    /** Defines the stereo mode types. */
+    enum StereoModeType
+    {
+        SMT_NONE = 0x0,
+        SMT_FRAME_SEQUENTIAL
+    };
+#endif
+
 	/** Flags for the Instance Manager when calculating ideal number of instances per batch */
 	enum InstanceManagerFlags
 	{

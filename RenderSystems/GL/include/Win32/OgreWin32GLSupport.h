@@ -94,6 +94,10 @@ namespace Ogre
         bool mHasMultisample;
 		bool mHasHardwareGamma;
 
+#ifdef OGRE_STEREO_ENABLE
+        StereoModeType mStereoMode;
+#endif
+
 		struct DisplayMonitorInfo
 		{
 			HMONITOR		hMonitor;

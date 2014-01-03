@@ -155,6 +155,10 @@ namespace Ogre {
         vector<GLuint>::type mRenderAttribsBound;
         vector<GLuint>::type mRenderInstanceAttribsBound;
 
+#ifdef OGRE_STEREO_ENABLE
+        /// @copydoc RenderSystem::setDrawBuffer
+        virtual bool setDrawBuffer(ColourBufferType colourBuffer);
+#endif
 
 	protected:
 		void setClipPlanesImpl(const PlaneList& clipPlanes);

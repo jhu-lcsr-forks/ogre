@@ -185,6 +185,12 @@ else ()
 	set(RTSHADER_SYSTEM_BUILD_EXT_SHADERS 0)
 endif ()
 
+if (OGRE_STEREO_ENABLE)	
+    set(OGRE_STEREO_ENABLE 1)
+else ()
+    set(OGRE_STEREO_ENABLE 0)
+endif ()
+
 # generate OgreBuildSettings.h
 configure_file(${OGRE_TEMPLATES_DIR}/OgreBuildSettings.h.in ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h @ONLY)
 install(FILES ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h DESTINATION include/OGRE)

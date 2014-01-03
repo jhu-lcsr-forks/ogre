@@ -448,6 +448,7 @@ if (WIN32)
 		install(FILES ${OGRE_BINARY_DIR}/OGRE.props DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	endif ()
 endif ()
+option(OGRE_STEREO_ENABLE "Enable stereoscopic 3D support" TRUE)
 
 # Unity build options
 # A Unity build includes all sources files in just a few actual compilation units

@@ -364,6 +364,12 @@ namespace Ogre {
         */
         virtual bool isPrimary(void) const;
 
+#ifdef OGRE_STEREO_ENABLE
+        /** Indicates whether stereo is currently enabled for this target. Default is false.
+        */
+        virtual bool isStereoEnabled(void) const { return mStereoEnabled; }
+#endif
+
 		/** Indicates whether on rendering, linear colour space is converted to 
 			sRGB gamma colour space. This is the exact opposite conversion of
 			what is indicated by Texture::isHardwareGammaEnabled, and can only
@@ -487,6 +493,9 @@ namespace Ogre {
 		// FSAA performed?
 		uint mFSAA;
 		String mFSAAHint;
+#ifdef OGRE_STEREO_ENABLE
+        bool mStereoEnabled;
+#endif
 
         void updateStats(void);
 

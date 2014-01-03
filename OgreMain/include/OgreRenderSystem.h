@@ -1505,6 +1505,18 @@ namespace Ogre
         */
 		virtual void getCustomAttribute(const String& name, void* pData);
 
+#ifdef OGRE_STEREO_ENABLE
+        /**
+        * Sets the colour buffer that the render system will draw to. If the render system
+        * implementation or configuration does not support a particular value, then false will be
+        * returned and the current colour buffer value will not be modified.
+        *
+        * @param
+        *     colourBuffer Specifies the colour buffer that will be drawn into.
+        */
+        virtual bool setDrawBuffer(ColourBufferType colourBuffer) { return false; };
+#endif
+ 
 	protected:
 
 		/** DepthBuffers to be attached to render targets */

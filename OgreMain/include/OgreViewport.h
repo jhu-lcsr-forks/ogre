@@ -386,6 +386,23 @@ namespace Ogre {
 		/// Remove a listener to this viewport
 		void removeListener(Listener* l);
 
+#ifdef OGRE_STEREO_ENABLE
+        /** Sets the draw buffer type for the next frame.
+        @remarks
+            Specifies the particular buffer that will be targeted by the render
+            target. Should be used if the render target supports quad buffer
+            stereo. If the render target does not support stereo (ie. left and
+            right), then only back and front will be used.
+
+        @param buffer Specifies the particular buffer that will be targeted by
+            the render target.
+        */
+        virtual void setDrawBuffer(ColourBufferType colourBuffer) { mColourBuffer = colourBuffer; }
+
+        /** Returns the current colour buffer type for this viewport.*/
+        virtual ColourBufferType getDrawBuffer() { return mColourBuffer; }
+#endif
+  
     protected:
         Camera* mCamera;
         RenderTarget* mTarget;
@@ -419,6 +436,11 @@ namespace Ogre {
 
 		typedef vector<Listener*>::type ListenerList;
 		ListenerList mListeners;
+
+#ifdef OGRE_STEREO_ENABLE
+        ColourBufferType mColourBuffer;
+#endif
+
     };
 	/** @} */
 	/** @} */

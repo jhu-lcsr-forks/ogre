@@ -3858,4 +3858,40 @@ namespace Ogre {
         } // isCustomAttrib
     }
 
+#ifdef OGRE_STEREO_ENABLE
+    bool GLRenderSystem::setDrawBuffer(ColourBufferType colourBuffer)
+    {
+        bool result = true;
+
+        switch (colourBuffer)
+        {
+            case CBT_BACK:
+                glDrawBuffer(GL_BACK);
+                break;
+            case CBT_BACK_LEFT:
+                glDrawBuffer(GL_BACK_LEFT);
+                break;
+            case CBT_BACK_RIGHT:
+                glDrawBuffer(GL_BACK_RIGHT);
+                break;
+            default:
+                result = false;
+        }
+
+        // Check for any errors
+        GLenum error = glGetError();
+        if (result && GL_NO_ERROR != error)
+        {
+            String errorString = "GLRenderSystem::setDrawBuffer(";
+            errorString += Ogre::StringConverter::toString(colourBuffer);
+            errorString.append("): ");
+            const GLubyte* errorCode = gluErrorString(error);
+            errorString.append((const char*)errorCode);
+            Ogre::LogManager::getSingleton().logMessage(errorString);
+            result = false;
+        }
+
+        return result;
+    }
+#endif
 }
