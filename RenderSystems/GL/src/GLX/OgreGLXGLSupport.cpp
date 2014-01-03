@@ -163,7 +163,10 @@ namespace Ogre
 		ConfigOption optRTTMode;
 		ConfigOption optSRGB;
 		ConfigOption optEnableFixedPipeline;
-		
+#ifdef OGRE_STEREO_ENABLE
+                ConfigOption optStereoMode;
+#endif
+
 		optFullScreen.name = "Full Screen";
 		optFullScreen.immutable = false;
 		
@@ -209,7 +212,15 @@ namespace Ogre
 		remove_duplicates(optVideoMode.possibleValues);
 		
 		optVideoMode.currentValue = StringConverter::toString(mCurrentMode.first.first,4) + " x " + StringConverter::toString(mCurrentMode.first.second,4);
-		
+
+#ifdef OGRE_STEREO_ENABLE
+                optStereoMode.name = "Stereo Mode";
+                optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_NONE));
+                optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_FRAME_SEQUENTIAL));
+                optStereoMode.currentValue = optStereoMode.possibleValues[0];
+                optStereoMode.immutable = false;
+#endif
+
 		refreshConfig();
 		
 		if (GLXEW_SGI_swap_control)
@@ -261,7 +272,11 @@ namespace Ogre
 		mOptions[optFSAA.name] = optFSAA;
 		mOptions[optSRGB.name] = optSRGB;
 		mOptions[optEnableFixedPipeline.name] = optEnableFixedPipeline;
-		
+
+#ifdef OGRE_STEREO_ENABLE
+                mOptions[optStereoMode.name] = optStereoMode;
+#endif
+
 		refreshConfig();
 	}
 	
@@ -380,6 +395,13 @@ namespace Ogre
 				OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find Fixed Pipeline enabled options!", "Win32GLSupport::createWindow");
 			bool enableFixedPipeline = (opt->second.currentValue == "Yes");
 			renderSystem->setFixedPipelineEnabled(enableFixedPipeline);
+
+#ifdef OGRE_STEREO_ENABLE
+                        opt = mOptions.find("Stereo Mode");
+                        if (opt == mOptions.end())
+                            OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find stereo enabled options!", "GLXGLSupport::createWindow");
+                        miscParams["stereoMode"] = opt->second.currentValue;
+#endif
 
 			window = renderSystem->_createRenderWindow(windowTitle, w, h, fullscreen, &miscParams);
 		} 

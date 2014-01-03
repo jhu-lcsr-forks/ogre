@@ -224,6 +224,15 @@ namespace Ogre
 
 			if ((opt = miscParams->find("border")) != end)
 				border = opt->second;
+
+#ifdef OGRE_STEREO_ENABLE
+                        if ((opt = miscParams->find("stereoMode")) != end)
+                        {
+                                StereoModeType stereoMode = StringConverter::parseStereoMode(opt->second);
+                                if (SMT_NONE != stereoMode)
+                                        mStereoEnabled = true;
+                        }
+#endif
 		}
 		
 		// Ignore fatal XErrorEvents during parameter validation:
@@ -281,6 +290,9 @@ namespace Ogre
 				GLX_RED_SIZE,	   1,
 				GLX_BLUE_SIZE,	  1,
 				GLX_GREEN_SIZE,	 1,
+#ifdef OGRE_STEREO_ENABLE
+                                GLX_STEREO, mStereoEnabled ? True : False,
+#endif
 				None
 			};
 			
