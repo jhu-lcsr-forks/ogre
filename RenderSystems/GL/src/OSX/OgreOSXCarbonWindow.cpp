@@ -106,6 +106,11 @@ namespace Ogre
 
             if((opt = miscParams->find("Full Screen")) != end) 
                 fullScreen = StringConverter::parseBool( opt->second );
+
+#ifdef OGRE_STEREO_ENABLE
+            if ((opt = miscParams->find("stereoMode")) != end)
+                mStereoEnabled = StringConverter::parseStereoMode(opt->second);
+#endif
         }
 
         if(fullScreen)
@@ -192,7 +197,12 @@ namespace Ogre
                 attribs[ i++ ] = AGL_SAMPLES_ARB;
                 attribs[ i++ ] = fsaa_samples;
             }
-            
+
+#ifdef OGRE_STEREO_ENABLE
+            if (mStereoEnabled)
+                attribs[i++] = AGL_STEREO;
+#endif
+
             attribs[ i++ ] = AGL_NONE;
             
             mAGLPixelFormat = aglChoosePixelFormat( NULL, 0, attribs );

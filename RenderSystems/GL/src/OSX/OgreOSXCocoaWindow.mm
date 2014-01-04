@@ -174,6 +174,16 @@ namespace Ogre {
             opt = miscParams->find("contentScalingFactor");
             if(opt != miscParams->end())
                 mContentScalingFactor = StringConverter::parseReal(opt->second);
+            
+#ifdef OGRE_STEREO_ENABLE
+            opt = miscParams->find("stereoMode");
+            if (opt != miscParams->end())
+            {
+                StereoModeType stereoMode = StringConverter::parseStereoMode(opt->second);
+                if (SMT_NONE != stereoMode)
+                    mStereoEnabled = true;
+            }
+#endif
         }
 
         if(miscParams->find("externalGLContext") == miscParams->end())
@@ -215,7 +225,12 @@ namespace Ogre {
                 attribs[i++] = NSOpenGLPFASamples;
                 attribs[i++] = (NSOpenGLPixelFormatAttribute) fsaa_samples;
             }
-            
+
+#ifdef OGRE_STEREO_ENABLE
+            if (mStereoEnabled)
+                attribs[i++] = NSOpenGLPFAStereo;
+#endif
+
             attribs[i++] = (NSOpenGLPixelFormatAttribute) 0;
 
             mGLPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes: attribs];

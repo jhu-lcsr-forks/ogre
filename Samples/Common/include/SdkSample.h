@@ -344,43 +344,45 @@ namespace OgreBites
 #endif // INCLUDE_RTSHADER_SYSTEM
 
 #ifdef OGRE_STEREO_ENABLE
-            // Swap the images for the left and right eyes
-            if (evt.key == OIS::KC_M)
+            if (mWindow->isStereoEnabled())
             {
-                if (mWindow->isStereoEnabled() && NULL != mRightViewport)
+                // Swap the images for the left and right eyes
+                if (evt.key == OIS::KC_M)
                 {
-                    Ogre::ColourBufferType temp = mViewport->getDrawBuffer();
-                    mViewport->setDrawBuffer(mRightViewport->getDrawBuffer());
-                    mRightViewport->setDrawBuffer(temp);
-                    mDetailsPanel->setParamValue("Swap Eyes", Ogre::StringConverter::toString(mViewport->getDrawBuffer() != Ogre::CBT_BACK_LEFT));
+                    if (mWindow->isStereoEnabled() && NULL != mRightViewport)
+                    {
+                        Ogre::ColourBufferType temp = mViewport->getDrawBuffer();
+                        mViewport->setDrawBuffer(mRightViewport->getDrawBuffer());
+                        mRightViewport->setDrawBuffer(temp);
+                        mDetailsPanel->setParamValue("Swap Eyes", Ogre::StringConverter::toString(mViewport->getDrawBuffer() != Ogre::CBT_BACK_LEFT));
+                    }
+                }
+
+                // Decrease / Increase the focal length
+                if (evt.key == OIS::KC_COMMA)
+                {
+                    if (mCamera->getFocalLength() > 0.5)
+                        mCamera->setFocalLength(mCamera->getFocalLength() - 0.5f);
+                    mDetailsPanel->setParamValue("Focal Length", Ogre::StringConverter::toString(mCamera->getFocalLength()));
+                }
+                else if (evt.key == OIS::KC_PERIOD)
+                {
+                    mCamera->setFocalLength(mCamera->getFocalLength() + 0.5f);
+                    mDetailsPanel->setParamValue("Focal Length", Ogre::StringConverter::toString(mCamera->getFocalLength()));
+                }
+
+                // Decrease / Increase the frustum offset
+                if (evt.key == OIS::KC_LBRACKET)
+                {
+                    mCamera->setFrustumOffset(mCamera->getFrustumOffset().x + 0.1f, 0);
+                    mDetailsPanel->setParamValue("Frustum Offset", Ogre::StringConverter::toString(-mCamera->getFrustumOffset().x));
+                }
+                else if (evt.key == OIS::KC_RBRACKET)
+                {
+                    mCamera->setFrustumOffset(mCamera->getFrustumOffset().x - 0.1f, 0);
+                    mDetailsPanel->setParamValue("Frustum Offset", Ogre::StringConverter::toString(-mCamera->getFrustumOffset().x));
                 }
             }
-
-            // Decrease / Increase the focal length
-            if (evt.key == OIS::KC_COMMA)
-            {
-                if (mCamera->getFocalLength() > 0.5)
-                    mCamera->setFocalLength(mCamera->getFocalLength() - 0.5f);
-                mDetailsPanel->setParamValue("Focal Length", Ogre::StringConverter::toString(mCamera->getFocalLength()));
-            }
-            else if (evt.key == OIS::KC_PERIOD)
-            {
-                mCamera->setFocalLength(mCamera->getFocalLength() + 0.5f);
-                mDetailsPanel->setParamValue("Focal Length", Ogre::StringConverter::toString(mCamera->getFocalLength()));
-            }
-
-            // Decrease / Increase the frustum offset
-            if (evt.key == OIS::KC_LBRACKET)
-            {
-                mCamera->setFrustumOffset(mCamera->getFrustumOffset().x + 0.1f, 0);
-                mDetailsPanel->setParamValue("Frustum Offset", Ogre::StringConverter::toString(-mCamera->getFrustumOffset().x));
-            }
-            else if (evt.key == OIS::KC_RBRACKET)
-            {
-                mCamera->setFrustumOffset(mCamera->getFrustumOffset().x - 0.1f, 0);
-                mDetailsPanel->setParamValue("Frustum Offset", Ogre::StringConverter::toString(-mCamera->getFrustumOffset().x));
-            }
-
 #endif
 
 			mCameraMan->injectKeyDown(evt);
@@ -529,10 +531,13 @@ namespace OgreBites
 #endif
 
 #ifdef OGRE_STEREO_ENABLE
-      items.push_back("");
-      items.push_back("Swap Eyes");
-      items.push_back("Focal Length");
-      items.push_back("Frustum Offset");
+      if (mWindow->isStereoEnabled())
+      {
+          items.push_back("");
+          items.push_back("Swap Eyes");
+          items.push_back("Focal Length");
+          items.push_back("Frustum Offset");
+      }
 #endif
 
 			mDetailsPanel = mTrayMgr->createParamsPanel(TL_NONE, "DetailsPanel", 200, items);
@@ -558,9 +563,12 @@ namespace OgreBites
 #endif
 
 #ifdef OGRE_STEREO_ENABLE
-      mDetailsPanel->setParamValue("Swap Eyes", Ogre::StringConverter::toString(mViewport->getDrawBuffer() != Ogre::CBT_BACK_LEFT));
-      mDetailsPanel->setParamValue("Focal Length", Ogre::StringConverter::toString(mCamera->getFocalLength()));
-      mDetailsPanel->setParamValue("Frustum Offset", Ogre::StringConverter::toString(-mCamera->getFrustumOffset().x));
+      if (mWindow->isStereoEnabled())
+      {
+          mDetailsPanel->setParamValue("Swap Eyes", Ogre::StringConverter::toString(mViewport->getDrawBuffer() != Ogre::CBT_BACK_LEFT));
+          mDetailsPanel->setParamValue("Focal Length", Ogre::StringConverter::toString(mCamera->getFocalLength()));
+          mDetailsPanel->setParamValue("Frustum Offset", Ogre::StringConverter::toString(-mCamera->getFrustumOffset().x));
+      }
 #endif
 
 			setupContent();
