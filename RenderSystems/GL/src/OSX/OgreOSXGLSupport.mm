@@ -86,7 +86,7 @@ void OSXGLSupport::addConfig( void )
 	ConfigOption optSRGB;
     ConfigOption optContentScalingFactor;
 	ConfigOption optEnableFixedPipeline;
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
 	ConfigOption optStereoMode;
 #endif
 
@@ -148,7 +148,7 @@ void OSXGLSupport::addConfig( void )
     optEnableFixedPipeline.currentValue = "Yes";
     optEnableFixedPipeline.immutable = false;
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     optStereoMode.name = "Stereo Mode";
     optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_NONE));
     optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_FRAME_SEQUENTIAL));
@@ -322,7 +322,7 @@ void OSXGLSupport::addConfig( void )
     mOptions[optContentScalingFactor.name] = optContentScalingFactor;
 
     mOptions[optEnableFixedPipeline.name] = optEnableFixedPipeline;
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     mOptions[optStereoMode.name] = optStereoMode;
 #endif
 }
@@ -394,7 +394,7 @@ RenderWindow* OSXGLSupport::createWindow( bool autoCreateWindow, GLRenderSystem*
 			winOptions[ "macAPI" ] = opt->second.currentValue;
         }
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         opt = mOptions.find("Stereo Mode");
         if (opt == mOptions.end())
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find stereo enabled options!", "OSXGLSupport::createWindow");

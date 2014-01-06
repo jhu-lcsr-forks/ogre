@@ -208,7 +208,7 @@ namespace Ogre {
 			if ((opt = miscParams->find("enableDoubleClick")) != end)
 				enableDoubleClick = StringConverter::parseBool(opt->second);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             // stereo mode
             if ((opt = miscParams->find("stereoMode")) != end)
             {

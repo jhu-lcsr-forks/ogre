@@ -185,10 +185,10 @@ else ()
 	set(RTSHADER_SYSTEM_BUILD_EXT_SHADERS 0)
 endif ()
 
-if (OGRE_STEREO_ENABLE)	
-    set(OGRE_STEREO_ENABLE 1)
+if (OGRE_BUILD_STEREO_SUPPORT)
+    set(OGRE_SET_STEREO_ENABLE 1)
 else ()
-    set(OGRE_STEREO_ENABLE 0)
+    set(OGRE_SET_STEREO_ENABLE 0)
 endif ()
 
 # generate OgreBuildSettings.h

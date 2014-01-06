@@ -94,7 +94,7 @@ namespace Ogre
         bool mHasMultisample;
 		bool mHasHardwareGamma;
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         StereoModeType mStereoMode;
 #endif
 

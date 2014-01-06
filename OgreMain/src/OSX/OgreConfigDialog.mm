@@ -52,7 +52,7 @@ namespace Ogre {
         if (!mWindowDelegate)
             OGRE_EXCEPT (Exception::ERR_INTERNAL_ERROR, "Could not load config dialog",
                          "ConfigDialog::initialise");
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         NSArray *keys = [[NSArray alloc] initWithObjects:@"Stereo Mode", @"Full Screen", @"FSAA", @"Colour Depth", @"RTT Preferred Mode", @"Video Mode", @"sRGB Gamma Conversion", @"macAPI", @"Content Scaling Factor", nil];
         NSArray *stereoModeOptions = [[NSArray alloc] initWithObjects:@"None", @"Frame Sequential", nil];
 #else
@@ -91,7 +91,7 @@ namespace Ogre {
 			rs->setConfigOption("macAPI", "carbon");
 #endif
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             rs->setConfigOption("Stereo Mode", "None");
 #endif
 
@@ -133,7 +133,7 @@ namespace Ogre {
             }
         }
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         NSArray *objects = [[NSArray alloc] initWithObjects:stereoModeOptions, fullScreenOptions, fsaaOptions,
                             colourDepthOptions, rttOptions, videoModeOptions, sRGBOptions, macAPIOptions, contentScaleOptions, nil];
 #else
@@ -143,7 +143,7 @@ namespace Ogre {
         [mWindowDelegate setOptions:[NSDictionary dictionaryWithObjects:objects forKeys:keys]];
 
         // Clean up all those arrays
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         [stereoModeOptions release];
 #endif
         [fullScreenOptions release];

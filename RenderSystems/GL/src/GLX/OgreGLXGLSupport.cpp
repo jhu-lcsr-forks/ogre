@@ -163,7 +163,7 @@ namespace Ogre
 		ConfigOption optRTTMode;
 		ConfigOption optSRGB;
 		ConfigOption optEnableFixedPipeline;
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
                 ConfigOption optStereoMode;
 #endif
 
@@ -213,7 +213,7 @@ namespace Ogre
 		
 		optVideoMode.currentValue = StringConverter::toString(mCurrentMode.first.first,4) + " x " + StringConverter::toString(mCurrentMode.first.second,4);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
                 optStereoMode.name = "Stereo Mode";
                 optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_NONE));
                 optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_FRAME_SEQUENTIAL));
@@ -273,7 +273,7 @@ namespace Ogre
 		mOptions[optSRGB.name] = optSRGB;
 		mOptions[optEnableFixedPipeline.name] = optEnableFixedPipeline;
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
                 mOptions[optStereoMode.name] = optStereoMode;
 #endif
 
@@ -396,7 +396,7 @@ namespace Ogre
 			bool enableFixedPipeline = (opt->second.currentValue == "Yes");
 			renderSystem->setFixedPipelineEnabled(enableFixedPipeline);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
                         opt = mOptions.find("Stereo Mode");
                         if (opt == mOptions.end())
                             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find stereo enabled options!", "GLXGLSupport::createWindow");

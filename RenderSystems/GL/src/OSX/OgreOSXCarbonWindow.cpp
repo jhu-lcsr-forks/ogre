@@ -107,7 +107,7 @@ namespace Ogre
             if((opt = miscParams->find("Full Screen")) != end) 
                 fullScreen = StringConverter::parseBool( opt->second );
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             if ((opt = miscParams->find("stereoMode")) != end)
                 mStereoEnabled = StringConverter::parseStereoMode(opt->second);
 #endif
@@ -198,7 +198,7 @@ namespace Ogre
                 attribs[ i++ ] = fsaa_samples;
             }
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             if (mStereoEnabled)
                 attribs[i++] = AGL_STEREO;
 #endif

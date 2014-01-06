@@ -1375,7 +1375,7 @@ void SceneManager::_renderScene(Camera* camera, Viewport* vp, bool includeOverla
 	// However don't call setViewport just yet (see below)
 	mCurrentViewport = vp;
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     // Set the draw buffer before clearing, updating, and rendering the scene
     this->mDestRenderSystem->setDrawBuffer(mCurrentViewport->getDrawBuffer());
 #endif

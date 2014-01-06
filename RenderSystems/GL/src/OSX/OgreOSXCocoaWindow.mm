@@ -175,7 +175,7 @@ namespace Ogre {
             if(opt != miscParams->end())
                 mContentScalingFactor = StringConverter::parseReal(opt->second);
             
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             opt = miscParams->find("stereoMode");
             if (opt != miscParams->end())
             {
@@ -226,7 +226,7 @@ namespace Ogre {
                 attribs[i++] = (NSOpenGLPixelFormatAttribute) fsaa_samples;
             }
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             if (mStereoEnabled)
                 attribs[i++] = NSOpenGLPFAStereo;
 #endif

@@ -60,7 +60,7 @@ namespace OgreBites
 			mDetailsPanel = 0;
 			mCursorWasVisible = false;
 			mDragLook = false;
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             mRightCamera = 0;
             mRightViewport = 0;
 #endif
@@ -101,7 +101,7 @@ namespace OgreBites
 			}
 		}
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     virtual bool frameStarted(const Ogre::FrameEvent& evt)
     {
             if (mWindow->isStereoEnabled() && NULL != mRightCamera)
@@ -343,7 +343,7 @@ namespace OgreBites
 			}	
 #endif // INCLUDE_RTSHADER_SYSTEM
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             if (mWindow->isStereoEnabled())
             {
                 // Swap the images for the left and right eyes
@@ -530,7 +530,7 @@ namespace OgreBites
 			// scene->getTechnique(0)->getOutputTargetPass()->setMaterialScheme(Ogre::Root::getSingleton().getRenderSystem()->_getDefaultViewportMaterialScheme());
 #endif
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
       if (mWindow->isStereoEnabled())
       {
           items.push_back("");
@@ -562,7 +562,7 @@ namespace OgreBites
 			mDetailsPanel->setParamValue(15, "0");															
 #endif
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
       if (mWindow->isStereoEnabled())
       {
           mDetailsPanel->setParamValue("Swap Eyes", Ogre::StringConverter::toString(mViewport->getDrawBuffer() != Ogre::CBT_BACK_LEFT));
@@ -600,7 +600,7 @@ namespace OgreBites
             mCamera->setAutoAspectRatio(true);
 			mCamera->setNearClipDistance(5);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
             if (mWindow->isStereoEnabled())
             {
                 mCamera->setFocalLength(10.0f);
@@ -638,7 +638,7 @@ namespace OgreBites
 		ParamsPanel* mDetailsPanel;   		// sample details panel
 		bool mCursorWasVisible;				// was cursor visible before dialog appeared
 		bool mDragLook;                     // click and drag to free-look
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         Ogre::Camera* mRightCamera;         // Right stereo camera
         Ogre::Viewport* mRightViewport;     // Right stereo viewport
 #endif

@@ -3858,7 +3858,7 @@ namespace Ogre {
         } // isCustomAttrib
     }
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     bool GLRenderSystem::setDrawBuffer(ColourBufferType colourBuffer)
     {
         bool result = true;

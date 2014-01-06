@@ -84,7 +84,7 @@ namespace Ogre {
         // notify camera
         if(cam) cam->_notifyViewport(this);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         mColourBuffer = CBT_BACK;
 #endif
     }

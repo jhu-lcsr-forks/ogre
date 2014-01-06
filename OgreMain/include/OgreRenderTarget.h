@@ -364,7 +364,7 @@ namespace Ogre {
         */
         virtual bool isPrimary(void) const;
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         /** Indicates whether stereo is currently enabled for this target. Default is false.
         */
         virtual bool isStereoEnabled(void) const { return mStereoEnabled; }
@@ -493,7 +493,7 @@ namespace Ogre {
 		// FSAA performed?
 		uint mFSAA;
 		String mFSAAHint;
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         bool mStereoEnabled;
 #endif
 

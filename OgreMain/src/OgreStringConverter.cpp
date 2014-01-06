@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include "OgreStableHeaders.h"
 #include "OgreStringConverter.h"
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
 #include "OgreException.h"
 #endif
 
@@ -577,7 +577,7 @@ namespace Ogre {
         return !str.fail() && str.eof();
     }
     
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     //-----------------------------------------------------------------------
     String StringConverter::toString(ColourBufferType val)
     {
@@ -615,7 +615,7 @@ namespace Ogre {
     }
 #endif
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     //-----------------------------------------------------------------------
     String StringConverter::toString(StereoModeType val)
     {

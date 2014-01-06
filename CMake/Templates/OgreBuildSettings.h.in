@@ -81,6 +81,6 @@
 
 #cmakedefine __FLASHCC__
 
-#cmakedefine OGRE_STEREO_ENABLE
+#define OGRE_STEREO_ENABLE @OGRE_SET_STEREO_ENABLE@
 
 #endif

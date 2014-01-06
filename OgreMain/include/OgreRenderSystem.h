@@ -1505,7 +1505,7 @@ namespace Ogre
         */
 		virtual void getCustomAttribute(const String& name, void* pData);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         /**
         * Sets the colour buffer that the render system will draw to. If the render system
         * implementation or configuration does not support a particular value, then false will be

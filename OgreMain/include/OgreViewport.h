@@ -386,7 +386,7 @@ namespace Ogre {
 		/// Remove a listener to this viewport
 		void removeListener(Listener* l);
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         /** Sets the draw buffer type for the next frame.
         @remarks
             Specifies the particular buffer that will be targeted by the render
@@ -437,7 +437,7 @@ namespace Ogre {
 		typedef vector<Listener*>::type ListenerList;
 		ListenerList mListeners;
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         ColourBufferType mColourBuffer;
 #endif
 

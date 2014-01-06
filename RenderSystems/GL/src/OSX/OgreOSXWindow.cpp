@@ -261,7 +261,7 @@ namespace Ogre
         CG_CHECK_ERROR(cgErr)
         
         // Get a pixel format that best matches what we are looking for
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
         int attribsSize = 17;
         if (mStereoEnabled)
             attribsSize++;

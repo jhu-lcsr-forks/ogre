@@ -298,7 +298,7 @@ namespace Ogre {
         FBT_STENCIL = 0x4
     };
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     /** Defines the colour buffer types. */
     enum ColourBufferType
     {
@@ -308,7 +308,7 @@ namespace Ogre {
     };
 #endif
 
-#ifdef OGRE_STEREO_ENABLE
+#if OGRE_STEREO_ENABLE
     /** Defines the stereo mode types. */
     enum StereoModeType
     {
