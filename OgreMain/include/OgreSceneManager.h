@@ -4,7 +4,7 @@ This source file is a part of OGRE
 
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2013 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -33,7 +33,6 @@ Torus Knot Software Ltd.
 // Precompiler options
 #include "OgrePrerequisites.h"
 
-#include "OgreString.h"
 #include "OgreSceneNode.h"
 #include "OgrePlane.h"
 #include "OgreQuaternion.h"
@@ -45,12 +44,9 @@ Torus Knot Software Ltd.
 #include "OgreRenderQueue.h"
 #include "OgreRenderQueueSortingGrouping.h"
 #include "OgreRectangle2D.h"
-#include "OgrePixelFormat.h"
 #include "OgreResourceGroupManager.h"
-#include "OgreTexture.h"
 #include "OgreShadowCameraSetup.h"
 #include "OgreShadowTextureManager.h"
-#include "OgreCamera.h"
 #include "OgreInstancedGeometry.h"
 #include "OgreLodListener.h"
 #include "OgreInstanceManager.h"

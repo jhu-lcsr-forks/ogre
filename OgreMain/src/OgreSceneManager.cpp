@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2013 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,35 +30,23 @@ THE SOFTWARE.
 #include "OgreSceneManager.h"
 
 #include "OgreCamera.h"
-#include "OgreRenderSystem.h"
 #include "OgreMeshManager.h"
-#include "OgreMesh.h"
 #include "OgreSubMesh.h"
 #include "OgreEntity.h"
 #include "OgreSubEntity.h"
 #include "OgreLight.h"
-#include "OgreMath.h"
 #include "OgreControllerManager.h"
 #include "OgreMaterialManager.h"
 #include "OgreAnimation.h"
-#include "OgreAnimationTrack.h"
-#include "OgreRenderQueueSortingGrouping.h"
 #include "OgreStringConverter.h"
-#include "OgreRenderQueueListener.h"
 #include "OgreRenderObjectListener.h"
 #include "OgreBillboardSet.h"
-#include "OgrePass.h"
 #include "OgreTechnique.h"
-#include "OgreTextureUnitState.h"
-#include "OgreException.h"
 #include "OgreLogManager.h"
-#include "OgreHardwareBufferManager.h"
 #include "OgreRoot.h"
 #include "OgreSpotShadowFadePng.h"
 #include "OgreGpuProgramManager.h"
-#include "OgreGpuProgram.h"
 #include "OgreShadowVolumeExtrudeProgram.h"
-#include "OgreDataStream.h"
 #include "OgreStaticGeometry.h"
 #include "OgreHardwarePixelBuffer.h"
 #include "OgreManualObject.h"

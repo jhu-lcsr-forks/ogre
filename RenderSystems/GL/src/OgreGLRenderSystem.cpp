@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2013 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -2755,7 +2755,7 @@ namespace Ogre {
             glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_ALPHA, GL_CONSTANT);
         }
 
-        float blendValue[4] = {0, 0, 0, bm.factor};
+        float blendValue[4] = {0, 0, 0, static_cast<float>(bm.factor)};
         switch (bm.operation)
         {
         case LBX_BLEND_DIFFUSE_COLOUR:
@@ -2825,25 +2825,25 @@ namespace Ogre {
         // Use general 4D vector which is the same as GL's approach
         vec = lt->getAs4DVector(true);
 
-#if OGRE_DOUBLE_PRECISION
         // Must convert to float*
-        float tmp[4] = {vec.x, vec.y, vec.z, vec.w};
+        float tmp[4] = {static_cast<float>(vec.x),
+                        static_cast<float>(vec.y),
+                        static_cast<float>(vec.z),
+                        static_cast<float>(vec.w)};
         glLightfv(lightindex, GL_POSITION, tmp);
-#else
-        glLightfv(lightindex, GL_POSITION, vec.ptr());
-#endif
+
         // Set spotlight direction
         if (lt->getType() == Light::LT_SPOTLIGHT)
         {
             vec = lt->getDerivedDirection();
             vec.w = 0.0;
-#if OGRE_DOUBLE_PRECISION
+
             // Must convert to float*
-            float tmp2[4] = {vec.x, vec.y, vec.z, vec.w};
+            float tmp2[4] = {static_cast<float>(vec.x),
+                            static_cast<float>(vec.y),
+                            static_cast<float>(vec.z),
+                            static_cast<float>(vec.w)};
             glLightfv(lightindex, GL_SPOT_DIRECTION, tmp2);
-#else
-            glLightfv(lightindex, GL_SPOT_DIRECTION, vec.ptr());
-#endif
         }
     }
     //---------------------------------------------------------------------
