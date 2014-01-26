@@ -26,17 +26,17 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include "OgreStableHeaders.h"
+#include "OgreCompositor.h"
 #include "OgreCompositorChain.h"
 #include "OgreCompositionTechnique.h"
 #include "OgreCompositorInstance.h"
 #include "OgreCompositionTargetPass.h"
 #include "OgreCompositionPass.h"
 #include "OgreCamera.h"
-#include "OgreRenderTarget.h"
-#include "OgreLogManager.h"
 #include "OgreCompositorManager.h"
 #include "OgreSceneManager.h"
-#include "OgreRenderQueueInvocation.h"
+#include "OgreRenderTarget.h"
+#include "OgreLogManager.h"
 #include "OgreMaterialManager.h"
 
 namespace Ogre {
@@ -111,7 +111,7 @@ void CompositorChain::createOriginalScene()
 	{
 		scene = CompositorManager::getSingleton().create(compName, ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME);
 		CompositionTechnique *t = scene->createTechnique();
-		t->setSchemeName(StringUtil::BLANK);
+		t->setSchemeName(BLANKSTRING);
 		CompositionTargetPass *tp = t->getOutputTargetPass();
 		tp->setVisibilityMask(0xFFFFFFFF);
 		{
@@ -529,6 +529,26 @@ void CompositorChain::_markDirty()
 Viewport *CompositorChain::getViewport()
 {
     return mViewport;
+}
+//---------------------------------------------------------------------
+void CompositorChain::_notifyViewport(Viewport* vp)
+{
+	if (vp != mViewport)
+	{
+		if (mViewport != NULL) 
+			mViewport->removeListener(this);
+
+		if (vp != NULL) 
+			vp->addListener(this);
+		
+		if (vp->getTarget() != mViewport->getTarget())
+		{
+			mViewport->getTarget()->removeListener(this);
+			vp->getTarget()->addListener(this);
+		}
+		mOurListener.notifyViewport(vp);
+		mViewport = vp;
+	}	
 }
 //-----------------------------------------------------------------------
 void CompositorChain::RQListener::renderQueueStarted(uint8 id, 

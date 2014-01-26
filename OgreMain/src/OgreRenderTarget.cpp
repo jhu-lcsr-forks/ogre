@@ -27,16 +27,16 @@ THE SOFTWARE.
 */
 #include "OgreStableHeaders.h"
 #include "OgreRenderTarget.h"
-#include "OgreStringConverter.h"
 
 #include "OgreViewport.h"
 #include "OgreException.h"
 #include "OgreLogManager.h"
 #include "OgreRenderTargetListener.h"
 #include "OgreRoot.h"
-#include "OgreRenderSystem.h"
 #include "OgreDepthBuffer.h"
 #include "OgreProfiler.h"
+#include "OgreTimer.h"
+#include <iomanip>
 
 namespace Ogre {
 
@@ -231,7 +231,7 @@ namespace Ogre {
 
         if (it != mViewportList.end())
         {
-			StringUtil::StrStreamType str;
+			StringStream str;
 			str << "Can't create another viewport for "
 				<< mName << " with Z-order " << ZOrder
 				<< " because a viewport exists with this Z-order already.";
@@ -339,6 +339,7 @@ namespace Ogre {
         mStats.batchCount = 0;
         mStats.bestFrameTime = 999999;
         mStats.worstFrameTime = 0;
+		mStats.vBlankMissCount = 0;
 
         mLastTime = mTimer->getMilliseconds();
         mLastSecond = mLastTime;

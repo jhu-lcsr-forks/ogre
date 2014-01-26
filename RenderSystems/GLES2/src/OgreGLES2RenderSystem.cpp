@@ -40,6 +40,8 @@ THE SOFTWARE.
 #include "OgreGLES2VertexDeclaration.h"
 #include "OgreGLSLESProgramFactory.h"
 #include "OgreRoot.h"
+#include "OgreViewport.h"
+#include "OgreFrustum.h"
 #if !OGRE_NO_GLES2_CG_SUPPORT
 #include "OgreGLSLESCgProgramFactory.h"
 #endif
@@ -382,8 +384,16 @@ namespace Ogre {
         rsc->setCapability(RSC_TEXTURE_3D);
 #endif
 
-        // ES 2 always supports NPOT textures
-        rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
+        // ES 3 always supports NPOT textures
+        if(mGLSupport->checkExtension("GL_OES_texture_npot") || mGLSupport->checkExtension("GL_ARB_texture_non_power_of_two") || gleswIsSupported(3, 0))
+        {
+            rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
+            rsc->setNonPOW2TexturesLimited(false);
+        }
+        else
+        {
+            rsc->setNonPOW2TexturesLimited(true);
+        }
 
         // Alpha to coverage always 'supported' when MSAA is available
         // although card may ignore it if it doesn't specifically support A2C
@@ -738,9 +748,9 @@ namespace Ogre {
     {
         // TODO find a way to get error string
 //        const GLubyte *errString = gluErrorString (errCode);
-//        return (errString != 0) ? String((const char*) errString) : StringUtil::BLANK;
+//        return (errString != 0) ? String((const char*) errString) : BLANKSTRING;
 
-        return StringUtil::BLANK;
+        return BLANKSTRING;
     }
 
     VertexElementType GLES2RenderSystem::getColourVertexElementType(void) const
@@ -1393,7 +1403,8 @@ namespace Ogre {
                                                 StencilOperation stencilFailOp,
                                                 StencilOperation depthFailOp,
                                                 StencilOperation passOp,
-                                                bool twoSidedOperation)
+												bool twoSidedOperation,
+												bool readBackAsTexture)
     {
 		bool flip = false;
 
@@ -1591,7 +1602,7 @@ namespace Ogre {
             globalVertexDeclaration = getGlobalInstanceVertexBufferVertexDeclaration();
             hasInstanceData = (op.useGlobalInstancingVertexBufferIsAvailable &&
                                 !globalInstanceVertexBuffer.isNull() && (globalVertexDeclaration != NULL))
-                                || op.vertexData->vertexBufferBinding->hasInstanceData();
+                                || op.vertexData->vertexBufferBinding->getHasInstanceData();
 
             numberOfInstances = op.numberOfInstances;
 
@@ -2371,7 +2382,7 @@ namespace Ogre {
             {
                 if (mCurrentVertexProgram)
                 {
-                    if (hwGlBuffer->isInstanceData())
+                    if (hwGlBuffer->getIsInstanceData())
                     {
                         OGRE_CHECK_GL_ERROR(glVertexAttribDivisorEXT(attrib, static_cast<GLuint>(hwGlBuffer->getInstanceDataStepRate())));
                         instanceAttribsBound.push_back(attrib);

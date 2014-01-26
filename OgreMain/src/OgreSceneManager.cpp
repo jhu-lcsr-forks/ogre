@@ -31,21 +31,19 @@ THE SOFTWARE.
 
 #include "OgreCamera.h"
 #include "OgreMeshManager.h"
-#include "OgreSubMesh.h"
 #include "OgreEntity.h"
 #include "OgreSubEntity.h"
 #include "OgreLight.h"
 #include "OgreControllerManager.h"
 #include "OgreMaterialManager.h"
 #include "OgreAnimation.h"
-#include "OgreStringConverter.h"
 #include "OgreRenderObjectListener.h"
 #include "OgreBillboardSet.h"
 #include "OgreTechnique.h"
 #include "OgreLogManager.h"
 #include "OgreRoot.h"
 #include "OgreSpotShadowFadePng.h"
-#include "OgreGpuProgramManager.h"
+#include "OgreShadowCameraSetup.h"
 #include "OgreShadowVolumeExtrudeProgram.h"
 #include "OgreStaticGeometry.h"
 #include "OgreHardwarePixelBuffer.h"
@@ -54,11 +52,18 @@ THE SOFTWARE.
 #include "OgreBillboardChain.h"
 #include "OgreRibbonTrail.h"
 #include "OgreParticleSystemManager.h"
+#include "OgreParticleSystem.h"
 #include "OgreProfiler.h"
-#include "OgreCompositorManager.h"
 #include "OgreCompositorChain.h"
 #include "OgreInstanceBatch.h"
 #include "OgreInstancedEntity.h"
+#include "OgreRenderTexture.h"
+#include "OgreTextureManager.h"
+#include "OgreSceneNode.h"
+#include "OgreRectangle2D.h"
+#include "OgreLodListener.h"
+#include "OgreInstancedGeometry.h"
+
 // This class implements the most basic scene manager
 
 #include <cstdio>
@@ -2345,7 +2350,7 @@ void SceneManager::renderVisibleObjectsDefaultSequence(void)
 			if (fireRenderQueueStarted(qId, 
 				mIlluminationStage == IRS_RENDER_TO_TEXTURE ? 
 					RenderQueueInvocation::RENDER_QUEUE_INVOCATION_SHADOWS : 
-					StringUtil::BLANK))
+					BLANKSTRING))
             {
                 // Someone requested we skip this queue
                 break;
@@ -2357,7 +2362,7 @@ void SceneManager::renderVisibleObjectsDefaultSequence(void)
 			if (fireRenderQueueEnded(qId, 
 				mIlluminationStage == IRS_RENDER_TO_TEXTURE ? 
 					RenderQueueInvocation::RENDER_QUEUE_INVOCATION_SHADOWS : 
-					StringUtil::BLANK))
+					BLANKSTRING))
             {
                 // Someone requested we repeat this queue
                 repeatQueue = true;
@@ -3863,7 +3868,7 @@ void SceneManager::manualRender(RenderOperation* rend,
 		}
 		mAutoParamDataSource->setCurrentSceneManager(this);
 		mAutoParamDataSource->setWorldMatrices(&worldMatrix, 1);
-		Camera dummyCam(StringUtil::BLANK, 0);
+		Camera dummyCam(BLANKSTRING, 0);
 		dummyCam.setCustomViewMatrix(true, viewMatrix);
 		dummyCam.setCustomProjectionMatrix(true, projMatrix);
 		mAutoParamDataSource->setCurrentCamera(&dummyCam, false);
@@ -3891,7 +3896,7 @@ void SceneManager::manualRender(Renderable* rend, const Pass* pass, Viewport* vp
 	mDestRenderSystem->_setProjectionMatrix(projMatrix);
 
 	_setPass(pass);
-	Camera dummyCam(StringUtil::BLANK, 0);
+	Camera dummyCam(BLANKSTRING, 0);
 	dummyCam.setCustomViewMatrix(true, viewMatrix);
 	dummyCam.setCustomProjectionMatrix(true, projMatrix);
 	// Do we need to update GPU program parameters?
@@ -4976,7 +4981,7 @@ const Pass* SceneManager::deriveShadowCasterPass(const Pass* pass)
 			else
 			{
 				// Standard shadow caster pass, reset to no vp
-				retPass->setVertexProgram(StringUtil::BLANK);
+				retPass->setVertexProgram(BLANKSTRING);
 			}
 		}
 
@@ -5014,7 +5019,7 @@ const Pass* SceneManager::deriveShadowCasterPass(const Pass* pass)
 			else
 			{
 				// Standard shadow caster pass, reset to no fp
-				retPass->setFragmentProgram(StringUtil::BLANK);
+				retPass->setFragmentProgram(BLANKSTRING);
 			}
 		}
         
@@ -5091,7 +5096,7 @@ const Pass* SceneManager::deriveShadowReceiverPass(const Pass* pass)
 			else
 			{
 				// Standard shadow receiver pass, reset to no vp
-				retPass->setVertexProgram(StringUtil::BLANK);
+				retPass->setVertexProgram(BLANKSTRING);
 			}
 		}
 
@@ -5194,7 +5199,7 @@ const Pass* SceneManager::deriveShadowReceiverPass(const Pass* pass)
 			else
 			{
 				// Standard shadow receiver pass, reset to no fp
-				retPass->setFragmentProgram(StringUtil::BLANK);
+				retPass->setFragmentProgram(BLANKSTRING);
 			}
 
 		}
@@ -5813,7 +5818,8 @@ void SceneManager::setShadowVolumeStencilState(bool secondpass, bool zfail, bool
             SOP_KEEP, // stencil test will never fail
             zfail ? incrOp : SOP_KEEP, // back face depth fail
             zfail ? SOP_KEEP : decrOp, // back face pass
-            twosided
+            twosided,
+			false
             );
     }
     else
@@ -5827,11 +5833,19 @@ void SceneManager::setShadowVolumeStencilState(bool secondpass, bool zfail, bool
             SOP_KEEP, // stencil test will never fail
             zfail ? decrOp : SOP_KEEP, // front face depth fail
             zfail ? SOP_KEEP : incrOp, // front face pass
-            twosided
+            twosided,
+			false
             );
     }
 	mDestRenderSystem->_setCullingMode(mPassCullingMode);
 
+}
+//---------------------------------------------------------------------
+void SceneManager::renderUsingReadBackAsTexture(unsigned int secondPass, Ogre::String variableName, unsigned int StartSlot)
+{
+	if (!mDestRenderSystem->getCapabilities()->hasCapability(RSC_READ_BACK_AS_TEXTURE)) return;
+
+	mDestRenderSystem->_renderUsingReadBackAsTexture(secondPass,variableName,StartSlot);
 }
 //---------------------------------------------------------------------
 void SceneManager::setShadowColour(const ColourValue& colour)
@@ -6098,7 +6112,7 @@ void SceneManager::setShadowTextureReceiverMaterial(const String& name)
 			}
 			else
 			{
-				mShadowTextureCustomReceiverVertexProgram = StringUtil::BLANK;
+				mShadowTextureCustomReceiverVertexProgram = BLANKSTRING;
 			}
 			if (mShadowTextureCustomReceiverPass->hasFragmentProgram())
 			{
@@ -6110,7 +6124,7 @@ void SceneManager::setShadowTextureReceiverMaterial(const String& name)
 			}
 			else
 			{
-				mShadowTextureCustomReceiverFragmentProgram = StringUtil::BLANK;
+				mShadowTextureCustomReceiverFragmentProgram = BLANKSTRING;
 			}
 		}
 	}

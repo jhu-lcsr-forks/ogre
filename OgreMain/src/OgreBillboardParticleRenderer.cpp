@@ -29,7 +29,9 @@ THE SOFTWARE.
 
 #include "OgreBillboardParticleRenderer.h"
 #include "OgreParticle.h"
+#include "OgreBillboard.h"
 #include "OgreStringConverter.h"
+#include "OgreSceneNode.h"
 
 namespace Ogre {
     String rendererTypeName = "billboard";
@@ -129,14 +131,31 @@ namespace Ogre {
         mBillboardSet->setCullIndividually(cullIndividually);
 
         // Update billboard set geometry
+        Vector3 bboxMin = Math::POS_INFINITY * Vector3::UNIT_SCALE;
+        Vector3 bboxMax = Math::NEG_INFINITY * Vector3::UNIT_SCALE;
+        Real radius = 0.0f;
         mBillboardSet->beginBillboards(currentParticles.size());
         Billboard bb;
+        Matrix4 invWorld;
+
+        if (mBillboardSet->getBillboardsInWorldSpace() && mBillboardSet->getParentSceneNode())
+            invWorld = mBillboardSet->getParentSceneNode()->_getFullTransform().inverse();
+
         for (list<Particle*>::type::iterator i = currentParticles.begin();
             i != currentParticles.end(); ++i)
         {
             Particle* p = *i;
             bb.mPosition = p->mPosition;
-			if (mBillboardSet->getBillboardType() == BBT_ORIENTED_SELF ||
+            Vector3 pos = p->mPosition;
+
+            if (mBillboardSet->getBillboardsInWorldSpace() && mBillboardSet->getParentSceneNode())
+                pos = invWorld * pos;
+
+            bboxMin.makeFloor( pos );
+            bboxMax.makeCeil( pos );
+            radius = std::max( radius, p->mPosition.length() );
+
+            if (mBillboardSet->getBillboardType() == BBT_ORIENTED_SELF ||
 				mBillboardSet->getBillboardType() == BBT_PERPENDICULAR_SELF)
 			{
 				// Normalise direction vector
@@ -154,7 +173,11 @@ namespace Ogre {
             mBillboardSet->injectBillboard(bb);
 
         }
-        
+
+        // Only set bounds if there are any active particles
+        if(currentParticles.size())
+            mBillboardSet->setBounds( AxisAlignedBox( bboxMin, bboxMax ), radius );
+
         mBillboardSet->endBillboards();
 
         // Update the queue
@@ -384,7 +407,7 @@ namespace Ogre {
             return "bottom_right";
         }
         // Compiler nicety
-        return StringUtil::BLANK;
+        return BLANKSTRING;
     }
     void BillboardParticleRenderer::CmdBillboardOrigin::doSet(void* target, const String& val)
     {
@@ -428,7 +451,7 @@ namespace Ogre {
             return "texcoord";
         }
         // Compiler nicety
-        return StringUtil::BLANK;
+        return BLANKSTRING;
     }
     void BillboardParticleRenderer::CmdBillboardRotationType::doSet(void* target, const String& val)
     {

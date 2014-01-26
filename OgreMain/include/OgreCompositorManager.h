@@ -30,13 +30,14 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreResourceManager.h"
-#include "OgreCompositor.h"
-#include "OgreRectangle2D.h"
 #include "OgreRenderSystem.h"
 #include "OgreCompositionTechnique.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre {
+
+    class Rectangle2D;
+
 	/** \addtogroup Core
 	*  @{
 	*/
@@ -172,6 +173,13 @@ namespace Ogre {
 		/** Get a custom composition pass by its name 
 		*/
 		CustomCompositionPass* getCustomCompositionPass(const String& name);
+
+		/**
+		Relocates a compositor chain from one viewport to another
+		@param sourceVP The viewport to take the chain from
+		@param destVP The viewport to connect the chain to
+		*/
+		void _relocateChain(Viewport* sourceVP, Viewport* destVP);
 
 		/** Override standard Singleton retrieval.
 		@remarks

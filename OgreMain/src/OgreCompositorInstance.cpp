@@ -26,6 +26,7 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include "OgreStableHeaders.h"
+#include "OgreCompositor.h"
 #include "OgreCompositorInstance.h"
 #include "OgreCompositorChain.h"
 #include "OgreCompositorManager.h"
@@ -33,16 +34,16 @@ THE SOFTWARE.
 #include "OgreCustomCompositionPass.h"
 #include "OgreTechnique.h"
 #include "OgreLogManager.h"
-#include "OgreMaterialManager.h"
 #include "OgreTextureManager.h"
 #include "OgreSceneManager.h"
-#include "OgreStringConverter.h"
 #include "OgreException.h"
 #include "OgreHardwarePixelBuffer.h"
 #include "OgreCamera.h"
 #include "OgreRoot.h"
-#include "OgreHardwareBufferManager.h"
 #include "OgreCompositorLogic.h"
+#include "OgreRenderTarget.h"
+#include "OgreRenderTexture.h"
+#include "OgreRectangle2D.h"
 
 namespace Ogre {
 CompositorInstance::CompositorInstance(CompositionTechnique *technique,
@@ -140,10 +141,10 @@ class RSStencilOperation: public CompositorInstance::RenderSystemOperation
 public:
 	RSStencilOperation(bool inStencilCheck, CompareFunction inFunc, uint32 inRefValue, uint32 inMask,
 		StencilOperation inStencilFailOp, StencilOperation inDepthFailOp, StencilOperation inPassOp,
-		bool inTwoSidedOperation):
+		bool inTwoSidedOperation, bool inReadBackAsTexture):
 		stencilCheck(inStencilCheck), func(inFunc), refValue(inRefValue), mask(inMask),
 		stencilFailOp(inStencilFailOp), depthFailOp(inDepthFailOp), passOp(inPassOp),
-		twoSidedOperation(inTwoSidedOperation)
+		twoSidedOperation(inTwoSidedOperation), readBackAsTexture(inReadBackAsTexture)
 	{}
 	bool stencilCheck;
 	CompareFunction func; 
@@ -153,11 +154,12 @@ public:
     StencilOperation depthFailOp;
     StencilOperation passOp;
     bool twoSidedOperation;
+	bool readBackAsTexture;
 
 	virtual void execute(SceneManager *sm, RenderSystem *rs)
 	{
 		rs->setStencilCheckEnabled(stencilCheck);
-		rs->setStencilBufferParams(func, refValue, mask, 0xFFFFFFFF, stencilFailOp, depthFailOp, passOp, twoSidedOperation);
+		rs->setStencilBufferParams(func, refValue, mask, 0xFFFFFFFF, stencilFailOp, depthFailOp, passOp, twoSidedOperation, readBackAsTexture);
 	}
 };
 
@@ -317,7 +319,7 @@ void CompositorInstance::collectPasses(TargetOperation &finalState, CompositionT
 			queueRenderSystemOp(finalState, OGRE_NEW RSStencilOperation(
 				pass->getStencilCheck(),pass->getStencilFunc(), pass->getStencilRefValue(),
 				pass->getStencilMask(), pass->getStencilFailOp(), pass->getStencilDepthFailOp(),
-				pass->getStencilPassOp(), pass->getStencilTwoSidedOperation()
+				pass->getStencilPassOp(), pass->getStencilTwoSidedOperation(), pass->getStencilReadBackAsTextureOperation()
 				));
             break;
 		case CompositionPass::PT_RENDERSCENE: 
@@ -333,7 +335,7 @@ void CompositorInstance::collectPasses(TargetOperation &finalState, CompositionT
 			}
 
 			RSSetSchemeOperation* setSchemeOperation = 0;
-			if (pass->getMaterialScheme() != StringUtil::BLANK)
+			if (pass->getMaterialScheme() != BLANKSTRING)
 			{
 				//Add the triggers that will set the scheme and restore it each frame
 				finalState.currentQueueGroupID = pass->getFirstRenderQueue();
@@ -665,7 +667,7 @@ void CompositorInstance::createResources(bool forResizeOnly)
             if (!def->fsaa)
             {
                 fsaa = 0;
-                fsaaHint = StringUtil::BLANK;
+                fsaaHint = BLANKSTRING;
             }
             hwGamma = hwGamma || def->hwGammaWrite;
             
@@ -853,7 +855,7 @@ void CompositorInstance::deriveTextureRenderTargetOptions(
 	{
 		*hwGammaWrite = false;
 		*fsaa = 0;
-		*fsaaHint = StringUtil::BLANK;
+		*fsaaHint = BLANKSTRING;
 	}
 
 }

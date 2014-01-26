@@ -34,10 +34,12 @@ THE SOFTWARE.
 #import "OgreGLPixelFormat.h"
 #import "OgreGLUtil.h"
 #import "OgreGLRenderSystem.h"
+#import "OgreViewport.h"
 
 #import <AppKit/NSScreen.h>
 #import <AppKit/NSOpenGLView.h>
 #import <QuartzCore/CVDisplayLink.h>
+#import <iomanip>
 
 @implementation OgreWindow
 
@@ -126,7 +128,7 @@ namespace Ogre {
         NSString *windowTitle = [NSString stringWithCString:name.c_str() encoding:NSUTF8StringEncoding];
 		int winx = 0, winy = 0;
 		int depth = 32;
-        NameValuePairList::const_iterator opt{};
+        NameValuePairList::const_iterator opt;
         mIsFullScreen = fullScreen;
 		
 		if(miscParams)
@@ -272,7 +274,7 @@ namespace Ogre {
         }
         else
         {
-            NameValuePairList::const_iterator param_useNSView_pair{};
+            NameValuePairList::const_iterator param_useNSView_pair;
             param_useNSView_pair = miscParams->find("macAPICocoaUseNSView");
 
             if(param_useNSView_pair != miscParams->end())

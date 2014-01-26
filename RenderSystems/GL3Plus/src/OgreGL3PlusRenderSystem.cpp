@@ -57,6 +57,7 @@ Copyright (c) 2000-2014 Torus Knot Software Ltd
 #include "OgreGL3PlusVertexArrayObject.h"
 #include "OgreRoot.h"
 #include "OgreConfig.h"
+#include "OgreViewport.h"
 
 #if OGRE_DEBUG_MODE
 static void APIENTRY GLDebugCallback(GLenum source,
@@ -376,6 +377,7 @@ namespace Ogre {
         rsc->setMaxPointSize(psRange[1]);
 
         // GLSL is always supported in GL
+        // TODO: Deprecate this profile name in favor of versioned names
         rsc->addShaderProfile("glsl");
 
         // Support for specific shader profiles
@@ -842,7 +844,7 @@ namespace Ogre {
 
     String GL3PlusRenderSystem::getErrorDescription(long errorNumber) const
     {
-        return StringUtil::BLANK;
+        return BLANKSTRING;
     }
 
     VertexElementType GL3PlusRenderSystem::getColourVertexElementType(void) const
@@ -974,6 +976,31 @@ namespace Ogre {
 
         activateGLTextureUnit(0);
     }
+
+	void GL3PlusRenderSystem::_setVertexTexture( size_t unit, const TexturePtr &tex )
+	{
+		_setTexture(unit, true, tex);
+	}
+
+	void GL3PlusRenderSystem::_setGeometryTexture( size_t unit, const TexturePtr &tex )
+	{
+		_setTexture(unit, true, tex);
+	}
+
+	void GL3PlusRenderSystem::_setComputeTexture( size_t unit, const TexturePtr &tex )
+	{
+		_setTexture(unit, true, tex);
+	}
+
+	void GL3PlusRenderSystem::_setTesselationHullTexture( size_t unit, const TexturePtr &tex )
+	{
+		_setTexture(unit, true, tex);
+	}
+
+	void GL3PlusRenderSystem::_setTesselationDomainTexture( size_t unit, const TexturePtr &tex )
+	{
+		_setTexture(unit, true, tex);
+	}
 
     void GL3PlusRenderSystem::_setTextureCoordSet(size_t stage, size_t index)
     {
@@ -1551,7 +1578,8 @@ namespace Ogre {
                                                      StencilOperation stencilFailOp,
                                                      StencilOperation depthFailOp,
                                                      StencilOperation passOp,
-                                                     bool twoSidedOperation)
+                                                     bool twoSidedOperation,
+													 bool readBackAsTexture)
     {
         bool flip;
         mStencilWriteMask = writeMask;
@@ -1734,7 +1762,7 @@ namespace Ogre {
         VertexDeclaration* globalVertexDeclaration = getGlobalInstanceVertexBufferVertexDeclaration();
         bool hasInstanceData = (op.useGlobalInstancingVertexBufferIsAvailable &&
                                 !globalInstanceVertexBuffer.isNull() && (globalVertexDeclaration != NULL))
-            || op.vertexData->vertexBufferBinding->hasInstanceData();
+            || op.vertexData->vertexBufferBinding->getHasInstanceData();
 
         size_t numberOfInstances = op.numberOfInstances;
 
@@ -2826,7 +2854,7 @@ namespace Ogre {
 
             if (mCurrentVertexShader)
             {
-                if (hwGlBuffer->isInstanceData())
+                if (hwGlBuffer->getIsInstanceData())
                 {
                     OGRE_CHECK_GL_ERROR(glVertexAttribDivisor(attrib, hwGlBuffer->getInstanceDataStepRate()));
                     instanceAttribsBound.push_back(attrib);

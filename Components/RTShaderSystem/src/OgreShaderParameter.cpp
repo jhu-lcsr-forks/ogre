@@ -27,7 +27,6 @@ THE SOFTWARE.
 
 #include "OgreShaderParameter.h"
 #include "OgreStringConverter.h"
-#include "OgreMatrix4.h"
 #include "OgreVector2.h"
 #include "OgreVector3.h"
 #include "OgreVector4.h"
@@ -354,6 +353,10 @@ bool UniformParameter::isFloat() const
 	case GCT_INT2:
 	case GCT_INT3:
 	case GCT_INT4:
+	case GCT_UINT1:
+	case GCT_UINT2:
+	case GCT_UINT3:
+	case GCT_UINT4:
 	case GCT_SAMPLER1D:
 	case GCT_SAMPLER2D:
     case GCT_SAMPLER2DARRAY:
@@ -642,11 +645,15 @@ ParameterPtr ParameterFactory::createInTexcoord(GpuConstantType type, int index,
     case GCT_MATRIX_4X2:
     case GCT_MATRIX_4X3:
     case GCT_MATRIX_4X4:
-    case GCT_INT1:
-    case GCT_INT2:
-    case GCT_INT3:
-    case GCT_INT4:
-    case GCT_UNKNOWN:
+	case GCT_INT1:
+	case GCT_INT2:
+	case GCT_INT3:
+	case GCT_INT4:
+	case GCT_UINT1:
+	case GCT_UINT2:
+	case GCT_UINT3:
+	case GCT_UINT4:
+	case GCT_UNKNOWN:
         break;
 	}
 
@@ -691,7 +698,11 @@ ParameterPtr ParameterFactory::createOutTexcoord(GpuConstantType type, int index
     case GCT_INT2:
     case GCT_INT3:
     case GCT_INT4:
-    case GCT_UNKNOWN:
+	case GCT_UINT1:
+	case GCT_UINT2:
+	case GCT_UINT3:
+	case GCT_UINT4:
+	case GCT_UNKNOWN:
         break;
 	}
 
@@ -798,6 +809,10 @@ UniformParameterPtr ParameterFactory::createSampler(GpuConstantType type, int in
     case GCT_INT2:
     case GCT_INT3:
     case GCT_INT4:
+	case GCT_UINT1:
+	case GCT_UINT2:
+	case GCT_UINT3:
+	case GCT_UINT4:
     case GCT_UNKNOWN:
         break;
 	}

@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "OgreStableHeaders.h"
 #include "OgreCompositionPass.h"
 #include "OgreMaterialManager.h"
+#include "OgreRenderQueue.h"
 
 namespace Ogre {
 
@@ -37,7 +38,7 @@ CompositionPass::CompositionPass(CompositionTargetPass *parent):
 	mIdentifier(0),
 	mFirstRenderQueue(RENDER_QUEUE_BACKGROUND),
 	mLastRenderQueue(RENDER_QUEUE_SKIES_LATE),
-	mMaterialScheme(StringUtil::BLANK),
+	mMaterialScheme(BLANKSTRING),
     mClearBuffers(FBT_COLOUR|FBT_DEPTH),
     mClearColour(0.0,0.0,0.0,0.0),
 	mClearDepth(1.0f),
@@ -50,6 +51,7 @@ CompositionPass::CompositionPass(CompositionTargetPass *parent):
     mStencilDepthFailOp(SOP_KEEP),
     mStencilPassOp(SOP_KEEP),
     mStencilTwoSidedOperation(false),
+	mStencilReadBackAsTexture(false),
     mQuadCornerModified(false),
     mQuadLeft(-1),
     mQuadTop(1),
@@ -266,6 +268,15 @@ bool CompositionPass::getStencilTwoSidedOperation() const
 {
 	return mStencilTwoSidedOperation;
 }
+void CompositionPass::setStencilReadBackAsTextureOperation(bool value)
+{
+	mStencilReadBackAsTexture = value;
+}
+bool CompositionPass::getStencilReadBackAsTextureOperation() const
+{
+	return mStencilReadBackAsTexture;
+}
+
 void CompositionPass::setQuadCorners(Real left,Real top,Real right,Real bottom)
 {
     mQuadCornerModified=true;

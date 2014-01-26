@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "OgreTerrain.h"
 #include "OgreConfigFile.h"
 #include "OgreResourceGroupManager.h"
+#include "OgreLogManager.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include "macUtils.h"
@@ -51,7 +52,7 @@ void TerrainTests::setUp()
     mFSLayer = OGRE_NEW_T(Ogre::FileSystemLayer, Ogre::MEMCATEGORY_GENERAL)(OGRE_VERSION_NAME);
 
 #ifdef OGRE_STATIC_LIB
-	mRoot = OGRE_NEW Root(StringUtil::BLANK);
+	mRoot = OGRE_NEW Root(BLANKSTRING);
         
 	mStaticPluginLoader.load();
 #else
@@ -63,16 +64,10 @@ void TerrainTests::setUp()
 	// Load resource paths from config file
 	ConfigFile cf;
     String resourcesPath;
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-	resourcesPath = mFSLayer->getConfigFilePath("resources.cfg");
-#elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#if OGRE_DEBUG_MODE
-    resourcesPath = mFSLayer->getConfigFilePath("resources_d.cfg");
-#else
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
     resourcesPath = mFSLayer->getConfigFilePath("resources.cfg");
-#endif
 #else
-	resourcesPath = mFSLayer->getConfigFilePath("bin/resources.cfg");
+    resourcesPath = mFSLayer->getConfigFilePath("bin/resources.cfg");
 #endif
 
     cf.load(resourcesPath);

@@ -26,15 +26,17 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include "OgreStableHeaders.h"
-#include "OgreCompositorManager.h"
 #include "OgreCompositor.h"
+#include "OgreCompositorManager.h"
 #include "OgreCompositorChain.h"
 #include "OgreCompositionPass.h"
-#include "OgreCustomCompositionPass.h"
 #include "OgreCompositionTargetPass.h"
 #include "OgreCompositionTechnique.h"
 #include "OgreRoot.h"
 #include "OgreScriptCompiler.h"
+#include "OgreTextureManager.h"
+#include "OgreRectangle2D.h"
+#include "OgreRenderTarget.h"
 
 namespace Ogre {
 
@@ -533,6 +535,24 @@ CustomCompositionPass* CompositorManager::getCustomCompositionPass(const String&
 			"CompositorManager::getCustomCompositionPass");
 	}
 	return it->second;
+}
+//-----------------------------------------------------------------------
+void CompositorManager::_relocateChain( Viewport* sourceVP, Viewport* destVP )
+{
+	if (sourceVP != destVP)
+	{
+		CompositorChain *chain = getCompositorChain(sourceVP);
+		Ogre::RenderTarget *srcTarget = sourceVP->getTarget();
+		Ogre::RenderTarget *dstTarget = destVP->getTarget();
+		if (srcTarget != dstTarget)
+		{
+			srcTarget->removeListener(chain);
+			dstTarget->addListener(chain);
+		}
+		chain->_notifyViewport(destVP);
+		mChains.erase(sourceVP);
+		mChains[destVP] = chain;
+	}
 }
 //-----------------------------------------------------------------------
 }

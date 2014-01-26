@@ -28,13 +28,16 @@
 #ifndef __SdkTrays_H__
 #define __SdkTrays_H__
 
-#include "Ogre.h"
-#include "OgreOverlaySystem.h"
-#include <math.h>
-
+#include "OgreOverlay.h"
+#include "OgreOverlayManager.h"
+#include "OgreBorderPanelOverlayElement.h"
+#include "OgreTextAreaOverlayElement.h"
+#include "OgreFontManager.h"
 #include "OgreTimer.h"
-
-#include "InputContext.h"
+#include "OgreRoot.h"
+#include "OgreCamera.h"
+#include "OgreRenderWindow.h"
+#include <iomanip>
 
 #if OGRE_COMPILER == OGRE_COMPILER_MSVC
 // TODO - remove this
@@ -843,6 +846,11 @@ namespace OgreBites
 			mSmallTextArea->setCaption("");
 		}
 
+		size_t getItemsCount()
+		{
+			return mItems.size();
+		}
+
 		void selectItem(unsigned int index, bool notifyListener = true)
 		{
 			if (index >= mItems.size())
@@ -856,6 +864,21 @@ namespace OgreBites
 			fitCaptionToArea(mItems[index], mSmallTextArea, mSmallBox->getWidth() - mSmallTextArea->getLeft() * 2);
 
 			if (mListener && notifyListener) mListener->itemSelected(this);
+		}
+
+		bool containsItem(const Ogre::DisplayString& item)
+		{
+			bool res = false;
+			for (unsigned int i = 0; i < mItems.size(); i++)
+			{
+				if (item == mItems[i])
+				{
+					res = true;
+					break;
+				}
+			}
+
+			return res;
 		}
 
 		void selectItem(const Ogre::DisplayString& item, bool notifyListener = true)
@@ -1851,9 +1874,9 @@ namespace OgreBites
 		| Displays specified material on backdrop, or the last material used if
 		| none specified. Good for pause menus like in the browser.
 		-----------------------------------------------------------------------------*/
-		void showBackdrop(const Ogre::String& materialName = Ogre::StringUtil::BLANK)
+		void showBackdrop(const Ogre::String& materialName = Ogre::BLANKSTRING)
 		{
-			if (materialName != Ogre::StringUtil::BLANK) mBackdrop->setMaterialName(materialName);
+			if (materialName != Ogre::BLANKSTRING) mBackdrop->setMaterialName(materialName);
 			mBackdropLayer->show();
 		}
 
@@ -1866,9 +1889,9 @@ namespace OgreBites
 		| Displays specified material on cursor, or the last material used if
 		| none specified. Used to change cursor type.
 		-----------------------------------------------------------------------------*/
-		void showCursor(const Ogre::String& materialName = Ogre::StringUtil::BLANK)
+		void showCursor(const Ogre::String& materialName = Ogre::BLANKSTRING)
 		{
-			if (materialName != Ogre::StringUtil::BLANK) getCursorImage()->setMaterialName(materialName);
+			if (materialName != Ogre::BLANKSTRING) getCursorImage()->setMaterialName(materialName);
 
 			if (!mCursorLayer->isVisible())
 			{

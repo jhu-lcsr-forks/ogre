@@ -30,12 +30,11 @@ THE SOFTWARE.
 #define __SCRIPTCOMPILER_H_
 
 #include "OgreSharedPtr.h"
-#include "OgreMaterial.h"
-#include "OgreHighLevelGpuProgram.h"
-#include "OgreCompositor.h"
 #include "OgreSingleton.h"
 #include "OgreScriptLoader.h"
+#include "OgreGpuProgram.h"
 #include "OgreAny.h"
+#include "Threading/OgreThreadHeaders.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre
@@ -846,6 +845,7 @@ namespace Ogre
 			ID_DEPTH_FAIL_OP,
 			ID_PASS_OP,
 			ID_TWO_SIDED,
+			ID_READ_BACK_AS_TEXTURE,
 #ifdef RTSHADER_SYSTEM_BUILD_CORE_SHADERS
         ID_RT_SHADER_SYSTEM,
 #endif

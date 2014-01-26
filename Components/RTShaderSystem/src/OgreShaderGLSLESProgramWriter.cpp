@@ -26,28 +26,17 @@ THE SOFTWARE.
 */
 
 #include "OgreShaderGLSLESProgramWriter.h"
-#include "OgreShaderFFPRenderState.h"
-#include "OgreShaderExIntegratedPSSM3.h"
-#include "OgreShaderExLayeredBlending.h"
-#include "OgreShaderExNormalMapLighting.h"
-#include "OgreShaderExPerPixelLighting.h"
+#include "OgreShaderProgram.h"
 
 #include "OgreShaderFunctionAtom.h"
-#include "OgreResourceGroupManager.h"
 #include "OgreRoot.h"
+#include "OgreString.h"
+#include "OgreLogManager.h"
+
 namespace Ogre {
     namespace RTShader {
 
         String GLSLESProgramWriter::TargetLanguage =  "glsles";
-
-        // Uniform comparer
-        struct CompareUniformByNameES : std::binary_function<UniformParameterPtr, String, bool>
-        {
-            bool operator()( const UniformParameterPtr& uniform, const String& name ) const 
-            {
-                    return uniform->getName() == name;
-            }
-        };
 
         //-----------------------------------------------------------------------
         GLSLESProgramWriter::GLSLESProgramWriter()
@@ -162,7 +151,7 @@ namespace Ogre {
         {
             // Uses recursion to find any functions that the supplied function invocation depends on
             FunctionMap::const_iterator itCache = mFunctionCacheMap.begin();
-            String body = StringUtil::BLANK;
+            String body = BLANKSTRING;
 
             // Find the function in the cache and retrieve the body
             for (; itCache != mFunctionCacheMap.end(); ++itCache)
@@ -174,7 +163,7 @@ namespace Ogre {
                 break;
             }
 
-            if(body != StringUtil::BLANK)
+            if(body != BLANKSTRING)
             {
                 // Trim whitespace
                 StringUtil::trim(body);
@@ -239,6 +228,10 @@ namespace Ogre {
             mGpuConstTypeMap[GCT_INT2] = "int2";
             mGpuConstTypeMap[GCT_INT3] = "int3";
             mGpuConstTypeMap[GCT_INT4] = "int4";
+			mGpuConstTypeMap[GCT_UINT1] = "uint";
+			mGpuConstTypeMap[GCT_UINT2] = "uint2";
+			mGpuConstTypeMap[GCT_UINT3] = "uint3";
+			mGpuConstTypeMap[GCT_UINT4] = "uint4";
 
             // Custom vertex attributes defined http://www.ogre3d.org/docs/manual/manual_21.html
             mContentToPerVertexAttributes[Parameter::SPC_POSITION_OBJECT_SPACE] = "vertex";
@@ -432,7 +425,7 @@ namespace Ogre {
                             // If its not a varying param check if a uniform is written
                             if(!isVarying)
                             {
-                                UniformParameterList::const_iterator itFound = std::find_if( parameterList.begin(), parameterList.end(), std::bind2nd( CompareUniformByNameES(), paramName ) );
+                                UniformParameterList::const_iterator itFound = std::find_if( parameterList.begin(), parameterList.end(), std::bind2nd( CompareUniformByName(), paramName ) );
                                 if(itFound != parameterList.end())
                                 {	
                                     // Declare the copy variable
@@ -788,7 +781,7 @@ namespace Ogre {
             {
                 FunctionMap::const_iterator itCache = mFunctionCacheMap.begin();
                 FunctionInvocation invoc = FunctionInvocation("", 0, 0);
-                String body = StringUtil::BLANK;
+                String body = BLANKSTRING;
 
                 // Find the function in the cache
                 for (; itCache != mFunctionCacheMap.end(); ++itCache)
@@ -975,7 +968,7 @@ namespace Ogre {
                         // First, look for a return type
                         if(isBasicType(tokens[0]) && ((tokens.size() < 3) || (tokens[2] != "=")) )
                         {
-                            String functionSig;
+                            String functionSig = "";
                             String functionBody = "";
                             FunctionInvocation *functionInvoc = NULL;
 

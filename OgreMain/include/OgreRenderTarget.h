@@ -30,9 +30,7 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#include "OgreTextureManager.h"
-#include "OgreViewport.h"
-#include "OgreTimer.h"
+#include "OgrePixelFormat.h"
 #include "OgreHeaderPrefix.h"
 
 /* Define the number of priority groups for the render system's render targets. */
@@ -85,6 +83,7 @@ namespace Ogre {
             unsigned long worstFrameTime;
             size_t triangleCount;
             size_t batchCount;
+			int vBlankMissCount; // -1 means that the value is not applicable
         };
 
 		enum FrameBuffer
@@ -496,7 +495,7 @@ namespace Ogre {
         bool mStereoEnabled;
 #endif
 
-        void updateStats(void);
+        virtual void updateStats(void);
 
 		typedef map<int, Viewport*>::type ViewportList;
         /// List of viewports, map on Z-order

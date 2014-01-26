@@ -32,8 +32,6 @@ THE SOFTWARE.
 #include "OgreCommon.h"
 #include "OgreBlendMode.h"
 #include "OgreMatrix4.h"
-#include "OgreIteratorWrappers.h"
-#include "OgreString.h"
 #include "OgreTexture.h"
 #include "OgreHeaderPrefix.h"
 
@@ -1260,7 +1258,7 @@ protected:
 
         bool mIsDefaultAniso;
         bool mIsDefaultFiltering;
-        /// Binding type (fragment or vertex pipeline).
+        /// Binding type (fragment, vertex, tesselation hull and domain pipeline).
         BindingType mBindingType;
         /// Content type of texture (normal loaded texture, auto-texture).
         ContentType mContentType;

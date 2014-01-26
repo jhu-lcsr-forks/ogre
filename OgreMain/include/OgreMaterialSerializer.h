@@ -29,7 +29,6 @@ THE SOFTWARE.
 #define __MaterialSerializer_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreMaterial.h"
 #include "OgreTextureUnitState.h"
 #include "OgreGpuProgram.h"
 #include "OgreStringVector.h"
@@ -243,10 +242,13 @@ namespace Ogre {
         void writeTechnique(const Technique* pTech);
         void writePass(const Pass* pPass);
         void writeVertexProgramRef(const Pass* pPass);
+        void writeTesselationHullProgramRef(const Pass* pPass);
+        void writeTesselationDomainProgramRef(const Pass* pPass);
         void writeShadowCasterVertexProgramRef(const Pass* pPass);
         void writeShadowCasterFragmentProgramRef(const Pass* pPass);
         void writeShadowReceiverVertexProgramRef(const Pass* pPass);
         void writeShadowReceiverFragmentProgramRef(const Pass* pPass);
+        void writeGeometryProgramRef(const Pass* pPass);
         void writeFragmentProgramRef(const Pass* pPass);
         void writeGpuProgramRef(const String& attrib, const GpuProgramPtr& program, const GpuProgramParametersSharedPtr& params);
         void writeGpuPrograms(void);

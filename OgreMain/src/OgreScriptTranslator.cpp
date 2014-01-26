@@ -38,6 +38,7 @@ THE SOFTWARE.
 #include "OgreParticleSystemRenderer.h"
 #include "OgreParticleEmitter.h"
 #include "OgreParticleAffector.h"
+#include "OgreCompositor.h"
 #include "OgreCompositorManager.h"
 #include "OgreCompositionTechnique.h"
 #include "OgreCompositionTargetPass.h"
@@ -46,7 +47,9 @@ THE SOFTWARE.
 #include "OgreLodStrategyManager.h"
 #include "OgreDistanceLodStrategy.h"
 #include "OgreDepthBuffer.h"
+#include "OgreParticleSystem.h"
 #include "OgreRoot.h"
+#include "OgreHighLevelGpuProgram.h"
 
 namespace Ogre{
 
@@ -6701,6 +6704,20 @@ namespace Ogre{
                             compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, prop->file, prop->line);
                     }
                     break;
+				case ID_READ_BACK_AS_TEXTURE:
+					{
+						if(prop->values.empty())
+						{
+							compiler->addError(ScriptCompiler::CE_STRINGEXPECTED, prop->file, prop->line);
+							return;
+						}
+						bool val;
+						if(getBoolean(prop->values.front(), &val))
+							mPass->setStencilReadBackAsTextureOperation(val);
+						else
+							compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, prop->file, prop->line);
+					}
+					break;
                 case ID_BUFFERS:
                     {
                         uint32 buffers = 0;
